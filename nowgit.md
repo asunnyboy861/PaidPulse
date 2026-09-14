@@ -15,10 +15,10 @@
 
 | Page | URL | Status |
 |------|-----|--------|
-| Landing Page | https://asunnyboy861.github.io/PaidPulse/ | ⏳ Pending |
-| Support | https://asunnyboy861.github.io/PaidPulse/support.html | ⏳ Pending |
-| Privacy Policy | https://asunnyboy861.github.io/PaidPulse/privacy.html | ⏳ Pending |
-| Terms of Use | https://asunnyboy861.github.io/PaidPulse/terms.html | ⏳ Pending |
+| Landing Page | https://asunnyboy861.github.io/PaidPulse/ | ✅ Active |
+| Support | https://asunnyboy861.github.io/PaidPulse/support.html | ✅ Active |
+| Privacy Policy | https://asunnyboy861.github.io/PaidPulse/privacy.html | ✅ Active |
+| Terms of Use | https://asunnyboy861.github.io/PaidPulse/terms.html | ✅ Active |
 
 ## Repository Structure
 
