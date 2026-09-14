@@ -1,0 +1,158 @@
+{
+  "identifier" : "FA70B1E2-3C4D-5E6F-8A9B-0C1D2E3F4A5B",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "14.99",
+      "familyShareable" : false,
+      "internalID" : "AAA1",
+      "localizations" : [
+        {
+          "description" : "Pay once. All Pro features forever",
+          "displayName" : "PaidPulse Pro Lifetime",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.zzoutuo.PaidPulse.pro.lifetime",
+      "referenceName" : "PaidPulse Pro Lifetime",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "2.99",
+      "familyShareable" : false,
+      "internalID" : "AAA2",
+      "localizations" : [
+        {
+          "description" : "30+ reminder letters for design clients",
+          "displayName" : "Design Studio Pack",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.zzoutuo.PaidPulse.pack.design",
+      "referenceName" : "PaidPulse Pack Design",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "2.99",
+      "familyShareable" : false,
+      "internalID" : "AAA3",
+      "localizations" : [
+        {
+          "description" : "30+ reminder letters for dev work",
+          "displayName" : "Dev & Agency Pack",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.zzoutuo.PaidPulse.pack.dev",
+      "referenceName" : "PaidPulse Pack Dev",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "2.99",
+      "familyShareable" : false,
+      "internalID" : "AAA4",
+      "localizations" : [
+        {
+          "description" : "30+ reminder letters for photo clients",
+          "displayName" : "Photography Pack",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.zzoutuo.PaidPulse.pack.photo",
+      "referenceName" : "PaidPulse Pack Photo",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "2.99",
+      "familyShareable" : false,
+      "internalID" : "AAA5",
+      "localizations" : [
+        {
+          "description" : "30+ reminder letters for contracting",
+          "displayName" : "Construction Pack",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.zzoutuo.PaidPulse.pack.construction",
+      "referenceName" : "PaidPulse Pack Construction",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "",
+    "_developerTeamID" : "JP4TN5PTS3",
+    "_lastSynchronizedDate" : 0
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "SG1",
+      "localizations" : [
+
+      ],
+      "name" : "PaidPulse Pro",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "1.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "AAA6",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Unlimited invoices and all Pro tools",
+              "displayName" : "PaidPulse Pro Monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.zzoutuo.PaidPulse.pro.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "PaidPulse Pro Monthly",
+          "subscriptionGroupID" : "SG1",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "9.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "AAA7",
+          "introductoryOffer" : {
+            "internalID" : "INTRO1",
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1W"
+          },
+          "localizations" : [
+            {
+              "description" : "All Pro tools, one year, 7-day trial",
+              "displayName" : "PaidPulse Pro Annual",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.zzoutuo.PaidPulse.pro.yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "PaidPulse Pro Annual",
+          "subscriptionGroupID" : "SG1",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0,
+    "patch" : 0
+  }
+}
