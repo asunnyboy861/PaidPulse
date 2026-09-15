@@ -63,11 +63,21 @@ final class Invoice {
     }
 
     var accruedInterest: Decimal {
-        guard daysOverdue > 0, annualInterestRate > 0 else { return 0 }
-        var value = outstanding * annualInterestRate / 100 / 365 * Decimal(daysOverdue)
+        guard daysOverdue > 0 else { return 0 }
+        var interest: Decimal = 0
+        if annualInterestRate > 0 {
+            interest += outstanding * annualInterestRate / 100 / 365 * Decimal(daysOverdue)
+        }
+        if lateFeePercent > 0 && daysOverdue >= 30 {
+            interest += outstanding * lateFeePercent / 100
+        }
         var rounded = Decimal()
-        NSDecimalRound(&rounded, &value, 2, .bankers)
+        NSDecimalRound(&rounded, &interest, 2, .bankers)
         return rounded
+    }
+
+    var hasLateFee: Bool {
+        lateFeePercent > 0 && daysOverdue >= 30
     }
 
     var totalDue: Decimal {

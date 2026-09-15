@@ -9,7 +9,7 @@ struct AddInvoiceView: View {
     @StateObject private var purchaseManager = PurchaseManager.shared
 
     @Query private var clients: [Client]
-    @Query(filter: #Predicate<Invoice> { !$0.statusRaw.contains("paid") })
+    @Query(filter: #Predicate<Invoice> { !$0.statusRaw.contains("paid") && !$0.statusRaw.contains("written") })
     private var activeInvoices: [Invoice]
 
     @State private var clientName = ""
@@ -21,6 +21,7 @@ struct AddInvoiceView: View {
     @State private var interestText = ""
     @State private var note = ""
     @State private var showPaywallInline = false
+    @State private var defaultsLoaded = false
 
     private var gate: EntitlementGate { EntitlementGate(isPro: purchaseManager.isPro) }
 
@@ -109,6 +110,14 @@ struct AddInvoiceView: View {
             }
             .navigationTitle("New Invoice")
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                guard !defaultsLoaded else { return }
+                defaultsLoaded = true
+                let settings = AppSettings.shared(modelContext)
+                if settings.defaultInterestRate > 0 {
+                    interestText = "\(NSDecimalNumber(decimal: settings.defaultInterestRate).doubleValue)"
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -135,8 +144,9 @@ struct AddInvoiceView: View {
         }()
 
         let interest = purchaseManager.isPro ? (Decimal(string: interestText.replacingOccurrences(of: ",", with: ".")) ?? 0) : 0
+        let lateFee = settings.lateFeeEnabled ? settings.lateFeePercent : 0
         let invoice = Invoice(client: client, amount: amount, dueDate: dueDate,
-                              annualInterestRate: interest, note: note)
+                              annualInterestRate: interest, lateFeePercent: lateFee, note: note)
         invoice.number = String(format: "INV-%04d", settings.nextInvoiceNumber)
         settings.nextInvoiceNumber += 1
         modelContext.insert(invoice)

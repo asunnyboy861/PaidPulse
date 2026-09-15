@@ -9,6 +9,7 @@ struct InvoiceRowView: View {
 
     @State private var showDetail = false
     @State private var showMarkPaid = false
+    @State private var showEdit = false
 
     private var hasChased: Bool {
         let invoiceID = invoice.id
@@ -56,8 +57,7 @@ struct InvoiceRowView: View {
                     }
                 }
             }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 12)
+            .padding(.vertical, 4)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -68,12 +68,22 @@ struct InvoiceRowView: View {
                 Label("Paid", systemImage: "dollarsign.circle.fill")
             }
             .tint(.green)
+            Button(role: .destructive) {
+                deleteInvoice()
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
         }
         .contextMenu {
             Button {
                 showMarkPaid = true
             } label: {
                 Label("Mark Paid", systemImage: "dollarsign.circle.fill")
+            }
+            Button {
+                showEdit = true
+            } label: {
+                Label("Edit", systemImage: "pencil")
             }
             Button(role: .destructive) {
                 deleteInvoice()
@@ -90,6 +100,9 @@ struct InvoiceRowView: View {
                 celebrateInvoice = invoice
             }
             .presentationDetents([.medium])
+        }
+        .sheet(isPresented: $showEdit) {
+            EditInvoiceView(invoice: invoice)
         }
     }
 

@@ -5,7 +5,7 @@ struct ChaseAllSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Binding var showPaywall: Bool
-    @Query(filter: #Predicate<Invoice> { !$0.statusRaw.contains("paid") }, sort: \Invoice.dueDate)
+    @Query(filter: #Predicate<Invoice> { !$0.statusRaw.contains("paid") && !$0.statusRaw.contains("written") }, sort: \Invoice.dueDate)
     private var activeInvoices: [Invoice]
 
     private var actionable: [Invoice] {

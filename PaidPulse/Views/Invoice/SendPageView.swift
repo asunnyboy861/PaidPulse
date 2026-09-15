@@ -229,7 +229,7 @@ struct SendPageView: View {
         case .sms:
             if SMSComposer.canSend {
                 showSMS = true
-            } else if let url = URL(string: "sms:\(invoice.client?.phone ?? "")&body=\(bodyText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")") {
+            } else if let url = URL(string: "sms:\(invoice.client?.phone ?? "")?body=\(bodyText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")") {
                 SendService.open(url)
                 record(channel)
             }

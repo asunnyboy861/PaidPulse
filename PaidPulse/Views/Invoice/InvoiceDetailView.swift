@@ -10,6 +10,7 @@ struct InvoiceDetailView: View {
     @StateObject private var purchaseManager = PurchaseManager.shared
     @State private var showSendPage = false
     @State private var showMarkPaid = false
+    @State private var showEdit = false
     @State private var pdfData: Data?
 
     private var gate: EntitlementGate { EntitlementGate(isPro: purchaseManager.isPro) }
@@ -40,8 +41,10 @@ struct InvoiceDetailView: View {
                     Text("\(invoice.number) · \(invoice.client?.name ?? "Client") · due \(invoice.dueDate.formatted(date: .abbreviated, time: .omitted))")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
-                    if invoice.annualInterestRate > 0 && invoice.daysOverdue > 0 {
-                        Label("\(Currency.format(invoice.accruedInterest)) interest accrued — \(invoice.annualInterestRate)% APR × \(invoice.daysOverdue) days",
+                    if invoice.daysOverdue > 0 && (invoice.annualInterestRate > 0 || invoice.hasLateFee) {
+                        Label(invoice.hasLateFee
+                              ? "\(Currency.format(invoice.accruedInterest)) interest & late fee accrued — includes \(invoice.lateFeePercent)% late payment fee at 30 days"
+                              : "\(Currency.format(invoice.accruedInterest)) interest accrued — \(invoice.annualInterestRate)% APR × \(invoice.daysOverdue) days",
                               systemImage: "percent")
                             .font(.caption)
                             .foregroundStyle(.orange)
@@ -126,6 +129,19 @@ struct InvoiceDetailView: View {
         }
         .navigationTitle("Invoice Detail")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showEdit = true
+                } label: {
+                    Image(systemName: "pencil")
+                }
+                .accessibilityLabel("Edit invoice")
+            }
+        }
+        .sheet(isPresented: $showEdit) {
+            EditInvoiceView(invoice: invoice)
+        }
         .onAppear {
             if let advanced = EscalationEngine.advance(invoice) {
                 NotificationScheduler.rebuild(for: invoice)

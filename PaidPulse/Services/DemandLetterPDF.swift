@@ -47,8 +47,13 @@ enum DemandLetterPDF {
                 y = 56
             }
             y += 24
-            draw("Interest calculation: \(Currency.format(invoice.outstanding)) principal × \(invoice.annualInterestRate)% annual rate × \(max(0, invoice.daysOverdue)) days ÷ 365",
-                 font: .systemFont(ofSize: 10), color: .darkGray)
+            if invoice.hasLateFee {
+                draw("Interest & fees: \(Currency.format(invoice.outstanding)) principal × \(invoice.annualInterestRate)% annual × \(max(0, invoice.daysOverdue)) days ÷ 365, plus a \(invoice.lateFeePercent)% late payment fee applied at 30 days past due.",
+                     font: .systemFont(ofSize: 10), color: .darkGray)
+            } else {
+                draw("Interest calculation: \(Currency.format(invoice.outstanding)) principal × \(invoice.annualInterestRate)% annual rate × \(max(0, invoice.daysOverdue)) days ÷ 365",
+                     font: .systemFont(ofSize: 10), color: .darkGray)
+            }
             draw("This document and its delivery record may be used as evidence of demand for payment.",
                  font: .systemFont(ofSize: 10), color: .darkGray)
         }

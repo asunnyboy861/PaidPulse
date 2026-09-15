@@ -15,6 +15,7 @@ struct PaywallView: View {
                     featureList
                     lifetimeCard
                     subscriptionCards
+                    packSection
                     restoreButton
                     legalLinks
                     autoRenewalDisclosure
@@ -146,6 +147,58 @@ struct PaywallView: View {
                     }
                 }
                 .padding(.vertical, 8)
+            }
+        }
+    }
+
+    private var packSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("INDUSTRY VOICE PACKS — $2.99 EACH")
+                .font(.caption2.bold())
+                .foregroundStyle(.secondary)
+            ForEach(PackLibrary.packs, id: \.id) { pack in
+                packRow(pack)
+            }
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+    }
+
+    private func packRow(_ pack: PackLibrary.Pack) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: pack.symbol)
+                .foregroundStyle(.green)
+                .frame(width: 24)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(pack.name)
+                    .font(.subheadline)
+                Text("30+ letters · \(pack.description.lowercased())")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+            Spacer()
+            if purchaseManager.ownedPacks.contains(pack.id) {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(.green)
+                    .accessibilityLabel("\(pack.name) owned")
+            } else if let product = purchaseManager.packProducts.first(where: { $0.id == pack.id }) {
+                Button {
+                    purchase(product)
+                } label: {
+                    Text(product.displayPrice)
+                        .font(.subheadline.bold())
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                }
+                .buttonStyle(.bordered)
+                .tint(.green)
+            } else {
+                Text("$2.99")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
         }
     }

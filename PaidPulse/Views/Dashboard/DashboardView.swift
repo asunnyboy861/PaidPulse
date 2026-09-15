@@ -5,7 +5,7 @@ import StoreKit
 struct DashboardView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.requestReview) private var requestReview
-    @Query(filter: #Predicate<Invoice> { !$0.statusRaw.contains("paid") }, sort: \Invoice.dueDate)
+    @Query(filter: #Predicate<Invoice> { !$0.statusRaw.contains("paid") && !$0.statusRaw.contains("written") }, sort: \Invoice.dueDate)
     private var activeInvoices: [Invoice]
     @Query(sort: \Invoice.paidDate, order: .reverse) private var paidInvoices: [Invoice]
     @Query private var clients: [Client]
@@ -41,18 +41,54 @@ struct DashboardView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 16) {
+            List {
+                Section {
                     statsRow
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets())
                     chaseAllButton
-                    bucketList
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 8, trailing: 16))
                 }
-                .padding(.horizontal)
-                .padding(.bottom, 32)
-                .frame(maxWidth: 720)
-                .frame(maxWidth: .infinity)
+                ForEach(buckets, id: \.0) { bucket, invoices in
+                    Section {
+                        ForEach(invoices) { invoice in
+                            InvoiceRowView(invoice: invoice, showPaywall: $showPaywall,
+                                           celebrateInvoice: $celebrateInvoice)
+                        }
+                    } header: {
+                        HStack {
+                            Text(bucket)
+                                .foregroundStyle(bucketColor(bucket))
+                            Spacer()
+                            Text(Currency.format(invoices.reduce(0) { $0 + $1.outstanding }))
+                                .foregroundStyle(.secondary)
+                                .font(.footnote.weight(.regular))
+                        }
+                    }
+                }
+                if buckets.isEmpty && paidInvoices.isEmpty {
+                    Section {
+                        VStack(spacing: 12) {
+                            Image(systemName: "checkmark.seal.fill")
+                                .font(.system(size: 48))
+                                .foregroundStyle(.green)
+                            Text("No invoices yet")
+                                .font(.title3.bold())
+                            Text("Add your first invoice and let PaidPulse handle the awkward part.")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
+                            Button("Add First Invoice") { showAddInvoice = true }
+                                .buttonStyle(.borderedProminent)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 48)
+                        .listRowBackground(Color.clear)
+                    }
+                }
             }
-            .background(Color(.systemGroupedBackground))
+            .listStyle(.insetGrouped)
             .navigationTitle("PaidPulse")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -102,7 +138,9 @@ struct DashboardView: View {
                       let idString = url.pathComponents.last,
                       let id = UUID(uuidString: idString) else { return }
                 let descriptor = FetchDescriptor<Invoice>(predicate: #Predicate { $0.id == id })
-                deepLinkInvoice = try? modelContext.fetch(descriptor).first
+                if let invoice = try? modelContext.fetch(descriptor).first, invoice.isActive {
+                    deepLinkInvoice = invoice
+                }
             }
             .onAppear { syncWidget() }
         }
@@ -133,49 +171,6 @@ struct DashboardView: View {
         .buttonStyle(.borderedProminent)
         .disabled(activeInvoices.filter { $0.daysOverdue >= 0 }.isEmpty)
         .accessibilityLabel("Send reminders for all actionable invoices")
-    }
-
-    private var bucketList: some View {
-        VStack(spacing: 16) {
-            if buckets.isEmpty && paidInvoices.isEmpty {
-                VStack(spacing: 12) {
-                    Image(systemName: "checkmark.seal.fill")
-                        .font(.system(size: 48))
-                        .foregroundStyle(.green)
-                    Text("No invoices yet")
-                        .font(.title3.bold())
-                    Text("Add your first invoice and let PaidPulse handle the awkward part.")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                    Button("Add First Invoice") { showAddInvoice = true }
-                        .buttonStyle(.borderedProminent)
-                }
-                .padding(.top, 60)
-            }
-            ForEach(buckets, id: \.0) { bucket, invoices in
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Text(bucket)
-                            .font(.footnote.bold())
-                            .textCase(.uppercase)
-                            .foregroundStyle(bucketColor(bucket))
-                        Spacer()
-                        Text(Currency.format(invoices.reduce(0) { $0 + $1.outstanding }))
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                    }
-                    VStack(spacing: 0) {
-                        ForEach(invoices) { invoice in
-                            InvoiceRowView(invoice: invoice, showPaywall: $showPaywall,
-                                           celebrateInvoice: $celebrateInvoice)
-                        }
-                    }
-                    .background(Color(.secondarySystemGroupedBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                }
-            }
-        }
     }
 
     private func bucketColor(_ bucket: String) -> Color {
